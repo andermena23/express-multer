@@ -1,6 +1,13 @@
 var express = require('express');
 var router = express.Router();
 const multer  = require('multer')
+const fs = require('fs');
+const path = require('path');
+
+const uploadDir = 'uploads/';
+if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir);
+}
 
 const maxSize = 2 * 1024 * 1024; // 2 * 1MB
 
@@ -36,9 +43,13 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', upload.single('avatar'), function (req, res, next) {
-    console.log(req.file)
-    // req.body will hold the text fields, if there were any
-    res.send("Jasota")
+    const name = req.body.name;
+    const filePath = `/uploads/${req.file.filename}`;
+
+    res.send(`
+        <p>Zure izena: ${name}</p>
+        <p>Fitxategia: <a href="${filePath}" target="_blank">${filePath}</a></p>
+      `);
 })
 
 module.exports = router;
